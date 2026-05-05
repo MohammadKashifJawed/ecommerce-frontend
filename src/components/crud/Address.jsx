@@ -18,7 +18,7 @@ const Address = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [addresses]);
   const handleUpdate = (id) => {
     setShowUpdateAddress(!showUpdateAddress);
     setAddressId(id);
