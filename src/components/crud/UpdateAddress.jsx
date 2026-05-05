@@ -10,6 +10,11 @@ const UpdateAddress = ({ addressId, setShowUpdateAddress }) => {
     pincode: "",
   });
   const { name, mobile, area, landmark, pincode } = address;
+  const style = {
+    borderBottom: '1px solid red',
+    color: 'red'
+  }
+  const [emptyInput, setEmptyInput] = useState(false)
   useEffect(() => {
     axios
       .get(`http://localhost:3000/address/${addressId}`)
@@ -29,7 +34,7 @@ const UpdateAddress = ({ addressId, setShowUpdateAddress }) => {
       landmark === "" ||
       pincode === ""
     ) {
-      alert("Please fill complete form");
+      setEmptyInput(!emptyInput)
     } else {
       axios
         .put(`http://localhost:3000/address/${addressId}`, address)
@@ -56,6 +61,7 @@ const UpdateAddress = ({ addressId, setShowUpdateAddress }) => {
         onSubmit={(e) => updateAddress(e)}
       >
         <h1 className="text-xl text-neutral-700 font-bold">Update ADDRESS</h1>
+        {emptyInput && <p className="text-red-600">can't set field empty</p>}
         <div
           className="h-20 w-full flex justify-evenly items-center font-semibold
           text-neutral-700"
@@ -66,6 +72,7 @@ const UpdateAddress = ({ addressId, setShowUpdateAddress }) => {
             id="name"
             placeholder="Name*"
             value={address.name}
+            style={address.name == '' ? style : {}}
             onChange={(e) => handleChange(e)}
             className="h-3/4 w-45/100 border-b border-neutral-500 outline-none caret-neutral-500"
           />
@@ -75,6 +82,7 @@ const UpdateAddress = ({ addressId, setShowUpdateAddress }) => {
             id="mobile"
             placeholder="Mobile*"
             value={address.mobile}
+            style={address.mobile == '' ? style : {}}
             onChange={(e) => handleChange(e)}
             className="h-3/4 w-45/100 border-b border-neutral-500 outline-none caret-neutral-500"
           />
@@ -89,6 +97,7 @@ const UpdateAddress = ({ addressId, setShowUpdateAddress }) => {
             id="area"
             placeholder="Area*"
             value={address.area}
+            style={address.area == '' ? style : {}}
             onChange={(e) => handleChange(e)}
             className="h-3/4 w-93/100 border-b border-neutral-500 outline-none caret-neutral-500"
           />
@@ -103,6 +112,7 @@ const UpdateAddress = ({ addressId, setShowUpdateAddress }) => {
             id="landmark"
             placeholder="Landmark*"
             value={address.landmark}
+            style={address.landmark == '' ? style : {}}
             onChange={(e) => handleChange(e)}
             className="h-3/4 w-45/100 border-b border-neutral-500 outline-none caret-neutral-500"
           />
@@ -113,6 +123,7 @@ const UpdateAddress = ({ addressId, setShowUpdateAddress }) => {
             placeholder="Pincode*"
             value={address.pincode}
             onChange={(e) => handleChange(e)}
+            style={address.pincode == '' ? style : {}}
             className="h-3/4 w-45/100 border-b border-neutral-500 outline-none caret-neutral-500"
           />
         </div>
@@ -126,7 +137,7 @@ const UpdateAddress = ({ addressId, setShowUpdateAddress }) => {
           <button
             className="h-full w-1/2 cursor-pointer"
             type="button"
-            onClick={() => setShowUpdateAddress((prev) => !prev)}
+            onClick={() => setShowUpdateAddress(prev => !prev)}
           >
             CANCEL
           </button>
