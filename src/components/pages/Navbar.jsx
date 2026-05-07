@@ -2,15 +2,19 @@ import { NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useContext } from "react";
 import { CartProductContext } from "../../App";
+import { CgProfile } from "react-icons/cg";
+import { LoginContext } from "../../context/LoginContext";
 
 // bg-[#F2EAE0]
 
 const Navbar = () => {
   const { cartProducts } = useContext(CartProductContext);
   const location = useLocation();
+  const { isLoggedIn } = useContext(LoginContext);
   if (
     location.pathname.startsWith("/product/") ||
-    location.pathname.startsWith("/cart")
+    location.pathname.startsWith("/cart") ||
+    location.pathname.startsWith("/login")
   ) {
     return null;
   } else {
@@ -50,6 +54,23 @@ const Navbar = () => {
             Cart <sup>{cartProducts.length}</sup>
           </p>
         </NavLink>
+        {!isLoggedIn ? (
+          <NavLink to={"/login"}>
+            <button
+              className="px-6 py-3 bg-blue-950 text-white font-semibold rounded-2xl
+            cursor-pointer"
+            >
+              Login
+            </button>
+          </NavLink>
+        ) : (
+          <NavLink to={'/profile'}>
+            <div className="h-15 w-12 flex flex-col justify-center items-center">
+              <CgProfile className="h-10 w-full" />
+              <p>Profile</p>
+            </div>
+          </NavLink>
+        )}
       </header>
     );
   }

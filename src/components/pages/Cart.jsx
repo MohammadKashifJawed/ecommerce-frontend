@@ -1,11 +1,14 @@
-import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { CartProductContext } from "../../App";
 import { IoTrashBinOutline } from "react-icons/io5";
 import logo from "../../assets/logo.png";
+import { LoginContext } from "../../context/LoginContext";
 
 const Cart = () => {
   const { cartProducts, setCartProducts } = useContext(CartProductContext);
+  const { isLoggedIn } = useContext(LoginContext);
+  const navigate = useNavigate();
 
   const handleRemoveFromCart = (id) => {
     setCartProducts(cartProducts.filter((e) => e.id !== id));
@@ -39,6 +42,11 @@ const Cart = () => {
   const totalPayableAmount = Number(
     (finalTotal - discount + platformFee).toFixed(2),
   );
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, [navigate, isLoggedIn]);
 
   if (cartProducts.length == 0) {
     return (
@@ -139,9 +147,11 @@ const Cart = () => {
           </p>
           <p className="flex justify-between items-center p-2">
             <span>Platform fee</span> <span>${platformFee}</span>
-          </p> <hr />
+          </p>{" "}
+          <hr />
           <p className="flex justify-between items-center p-2">
-            <span className="font-bold">Total amount</span> <span>${totalPayableAmount}</span>
+            <span className="font-bold">Total amount</span>{" "}
+            <span>${totalPayableAmount}</span>
           </p>
           <NavLink to="/address">
             <button className="py-3 px-6 m-2 bg-blue-950 text-white font-semibold rounded-2xl float-end cursor-pointer">

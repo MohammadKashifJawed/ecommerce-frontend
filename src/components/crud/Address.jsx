@@ -1,10 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import AddNewAddress from "./AddNewAddress";
 import UpdateAddress from "./UpdateAddress";
+import { LoginContext } from "../../context/LoginContext";
 
 const Address = () => {
+  const navigate = useNavigate()
+  const { isLoggedIn } = useContext(LoginContext)
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [showUpdateAddress, setShowUpdateAddress] = useState(false);
   const [addressId, setAddressId] = useState(0);
@@ -32,6 +35,11 @@ const Address = () => {
       console.log(err)
     })
   }
+  useEffect(() => {
+    if (!isLoggedIn){
+      navigate('/login')
+    }
+  }, [navigate, isLoggedIn])
   return (
     <div className="min-h-[90vh] w-full flex justify-center items-center">
       {showAddAddress && (

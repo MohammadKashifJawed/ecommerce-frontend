@@ -35,6 +35,7 @@ const Products = () => {
       {state.map(({ id, title, price, image, rating }) => {
         return (
           <div
+            data-aos="zoom-in"
             key={id}
             className="w-[17%] font-semibold text-center rounded-2xl bg-white flex flex-col justify-between p-2 shadow-neutral-400 shadow-md"
           >

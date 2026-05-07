@@ -4,6 +4,7 @@ import { NavLink, useParams } from "react-router-dom";
 import { CartProductContext } from "../../App";
 import logo from '../../assets/logo.png'
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import CountUp from 'react-countup';
 
 const Product = () => {
   const { id } = useParams();
