@@ -4,8 +4,18 @@ import { useContext } from "react";
 import { CartProductContext } from "../../App";
 import { CgProfile } from "react-icons/cg";
 import { LoginContext } from "../../context/LoginContext";
+import { SearchIcon } from "lucide-react"
 
-// bg-[#F2EAE0]
+import {
+  Field,
+  FieldDescription,
+  FieldLabel,
+} from "@/components/ui/field"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
 
 const Navbar = () => {
   const { cartProducts } = useContext(CartProductContext);
@@ -23,6 +33,7 @@ const Navbar = () => {
         <NavLink to="/">
           <img className="h-50" src={logo} alt="logo" />
         </NavLink>
+        <InputGroupInlineStart />
         <div className="flex gap-5">
           <NavLink
             className={`hover:text-blue-950 hover:duration-300 relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-0.5 after:bg-blue-950 after:transition-all after:duration-300 hover:after:w-full`}
@@ -66,7 +77,7 @@ const Navbar = () => {
         ) : (
           <NavLink to={'/profile'}>
             <div className="h-15 w-12 flex flex-col justify-center items-center">
-              <CgProfile className="h-10 w-full" />
+              <CgProfile className="h-8 w-full" />
               <p>Profile</p>
             </div>
           </NavLink>
@@ -77,3 +88,18 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+
+function InputGroupInlineStart() {
+  return (
+    <Field className="max-w-sm bg-neutral-200 rounded-2xl text-neutral-700">
+      <InputGroup>
+        <InputGroupInput id="inline-start-input" placeholder="Search..." />
+        <InputGroupAddon align="inline-start">
+          <SearchIcon className="text-muted-foreground" />
+        </InputGroupAddon>
+      </InputGroup>
+    </Field>
+  )
+}

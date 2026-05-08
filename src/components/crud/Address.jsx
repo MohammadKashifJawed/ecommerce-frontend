@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import AddNewAddress from "./AddNewAddress";
 import UpdateAddress from "./UpdateAddress";
 import { LoginContext } from "../../context/LoginContext";
+import { SelectedAddressContext } from "@/context/SelectedAddressContext";
 
 const Address = () => {
   const navigate = useNavigate()
@@ -12,6 +13,7 @@ const Address = () => {
   const [showUpdateAddress, setShowUpdateAddress] = useState(false);
   const [addressId, setAddressId] = useState(0);
   const [addresses, setAddresses] = useState([]);
+  const { setSelectedAddress } = useContext(SelectedAddressContext)
   useEffect(() => {
     axios
       .get("http://localhost:3000/address")
@@ -35,20 +37,25 @@ const Address = () => {
       console.log(err)
     })
   }
-  useEffect(() => {
-    if (!isLoggedIn){
-      navigate('/login')
-    }
-  }, [navigate, isLoggedIn])
+  // useEffect(() => {
+  //   if (!isLoggedIn){
+  //     navigate('/login')
+  //   }
+  // }, [navigate, isLoggedIn])
+  const handleSetAddress = (id, name, mobile, area, landmark, pincode) => {
+    setSelectedAddress({id:id, name:name, mobile:mobile, area:area, landmark:landmark, pincode:pincode})
+  }
   return (
-    <div className="min-h-[90vh] w-full flex justify-center items-center">
+    <div className="min-h-screen w-full flex flex-col justify-center items-center">
       {showAddAddress && (
         <AddNewAddress setShowAddAddress={setShowAddAddress} />
       )}
       {showUpdateAddress && (
         <UpdateAddress addressId={addressId} setShowUpdateAddress={setShowUpdateAddress} />
       )}
-      <div className="h-8/10 w-3/7 flex flex-col justify-start items-center gap-4 shadow-lg pb-2">
+      <p className="w-3/7 text-end text-red-900 text-xl cursor-pointer"
+        onClick={() => navigate('/cart')}>X</p>
+      <div className="h-8/10 w-3/7 flex flex-col justify-start items-center gap-4 shadow-lg pb-2 bg-white">
         <div className="w-full flex justify-between items-center p-2">
           <p className="text-xl font-bold text-neutral-800">Saved Address</p>
           <NavLink>
@@ -64,7 +71,8 @@ const Address = () => {
           return (
             <div
               key={id}
-              className="h-35 w-9/10 shadow-md shadow-neutral-400 text-neutral-700 font-semibold flex flex-col justify-between text-sm rounded-xl"
+              className="h-35 w-9/10 shadow-md shadow-neutral-400 text-neutral-700 font-semibold flex flex-col justify-between text-sm rounded-xl cursor-pointer hover:bg-neutral-100"
+              onClick={() => handleSetAddress(id, name, mobile, area, landmark, pincode)}
             >
               <h2 className="pl-2 text-lg font-bold text-neutral-800">
                 {name}

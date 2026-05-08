@@ -4,11 +4,19 @@ import { CartProductContext } from "../../App";
 import { IoTrashBinOutline } from "react-icons/io5";
 import logo from "../../assets/logo.png";
 import { LoginContext } from "../../context/LoginContext";
+import { SelectedAddressContext } from "@/context/SelectedAddressContext";
+import { TotalPriceContext } from "@/context/TotalPriceContext";
 
 const Cart = () => {
   const { cartProducts, setCartProducts } = useContext(CartProductContext);
   const { isLoggedIn } = useContext(LoginContext);
   const navigate = useNavigate();
+  const { selectedAddress } = useContext(SelectedAddressContext)
+  const {finalTotal, discount, platformFee, totalPayableAmount, calculateTotalAmount} =   useContext(TotalPriceContext)
+
+  useEffect(() => {
+    calculateTotalAmount(cartProducts)
+  }, [cartProducts, calculateTotalAmount])
 
   const handleRemoveFromCart = (id) => {
     setCartProducts(cartProducts.filter((e) => e.id !== id));
@@ -32,21 +40,12 @@ const Cart = () => {
     });
   };
 
-  const totalAmount = cartProducts.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0,
-  );
-  const finalTotal = Math.round(totalAmount * 100) / 100;
-  const discount = Number((finalTotal / 10).toFixed(2));
-  const platformFee = 23;
-  const totalPayableAmount = Number(
-    (finalTotal - discount + platformFee).toFixed(2),
-  );
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
-  }, [navigate, isLoggedIn]);
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     navigate("/login");
+  //   }
+  // }, [navigate, isLoggedIn]);
+
 
   if (cartProducts.length == 0) {
     return (
@@ -139,6 +138,16 @@ const Cart = () => {
         </div>
 
         <div className="h-[90vh] w-1/3 text-neutral-800 font-semibold">
+          <div className="h-1/10 w-full bg-neutral-200 flex justify-between items-center text-sm px-2
+            font-normal">
+            <div>
+              <p>Deliver to: <span className="text-black font-bold">{selectedAddress.name}, {selectedAddress.mobile}</span></p>
+              <p>{selectedAddress.area}, {selectedAddress.landmark}, {selectedAddress.pincode}</p>
+            </div>
+            <NavLink to='/address'>
+              <button className="py-1 px-3 border-2 border-blue-900 text-blue-950">Change address</button>
+            </NavLink>
+          </div>
           <p className="flex justify-between items-center p-2">
             <span>Total MRP</span> <span>${finalTotal}</span>
           </p>
@@ -153,9 +162,9 @@ const Cart = () => {
             <span className="font-bold">Total amount</span>{" "}
             <span>${totalPayableAmount}</span>
           </p>
-          <NavLink to="/address">
+          <NavLink to="/order">
             <button className="py-3 px-6 m-2 bg-blue-950 text-white font-semibold rounded-2xl float-end cursor-pointer">
-              Proceed
+              Checkout
             </button>
           </NavLink>
         </div>
