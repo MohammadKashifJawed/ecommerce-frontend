@@ -6,7 +6,7 @@ import qr from '../../assets/qr.jpeg'
 import { useContext } from 'react'
 import { TotalPriceContext } from '@/context/TotalPriceContext'
 
-export default function UpiPayment() {
+export default function UpiPayment({handleOrder}) {
     const { totalPayableAmount } = useContext(TotalPriceContext)
   const upiApps = [
     { name: "Google Pay", logo: gpay },
@@ -71,7 +71,8 @@ export default function UpiPayment() {
           </div>
         </div>
 
-        <button className="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-lg shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]">
+        <button className="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-lg shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
+          onClick={handleOrder}>
           Pay ₹{totalPayableAmount}
         </button>
 

@@ -6,6 +6,7 @@ import logo from "../../assets/logo.png";
 import { LoginContext } from "../../context/LoginContext";
 import { SelectedAddressContext } from "@/context/SelectedAddressContext";
 import { TotalPriceContext } from "@/context/TotalPriceContext";
+import { Button } from "../ui/button"
 
 const Cart = () => {
   const { cartProducts, setCartProducts } = useContext(CartProductContext);
@@ -40,27 +41,16 @@ const Cart = () => {
     });
   };
 
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     navigate("/login");
-  //   }
-  // }, [navigate, isLoggedIn]);
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, [navigate, isLoggedIn]);
 
 
   if (cartProducts.length == 0) {
     return (
       <>
-        <div className="h-[10vh] px-4 flex justify-between items-center overflow-hidden text-neutral-800 text-2xl bg-white shadow-md">
-          <NavLink to={"/"}>
-            {/* <h2 className="font-bold text-3xl">Shoplix</h2> */}
-            <img className="h-50" src={logo} alt="logo" />
-          </NavLink>
-          <NavLink to={"/cart"}>
-            <p className="font-semibold">
-              Cart <sup>{cartProducts.length}</sup>
-            </p>
-          </NavLink>
-        </div>
         <div
           className="h-[90vh] flex flex-col justify-center items-center text-4xl
                 font-semibold"
@@ -68,12 +58,7 @@ const Cart = () => {
           <IoTrashBinOutline className="text-red-500" />
           <h1>Cart is empty</h1>
           <NavLink to="/">
-            <p
-              className="p-3 bg-red-500 border-2 border-white rounded-2xl text-lg m-2 text-white hover:bg-white
-              hover:text-red-500 hover:border-red-500 duration-300"
-            >
-              Browse all products
-            </p>
+            <Button size="lg" className="hover:bg-neutral-800" >Browse all products</Button>
           </NavLink>
         </div>
       </>
@@ -81,27 +66,16 @@ const Cart = () => {
   }
   return (
     <>
-      <div className="h-[10vh] px-4 flex justify-between items-center overflow-hidden text-neutral-800 text-2xl bg-white shadow-md">
-        <NavLink to={"/"}>
-          <img className="h-50" src={logo} alt="logo" />
-        </NavLink>
-        <NavLink to={"/cart"}>
-          <p className="font-semibold">
-            Cart <sup>{cartProducts.length}</sup>
-          </p>
-        </NavLink>
-      </div>
-
       <div className="min-h-[90vh] w-full flex">
         <div className="min-h-full w-2/3 flex flex-col items-center gap-5 shadow-lg">
-          {cartProducts.map(({ id, image, title, price, quantity }) => {
+          {cartProducts.map(({ id, imageUrl, title, price, quantity }) => {
             return (
               <div
                 key={id}
                 className="h-40 w-[90%] flex justify-evenly items-center rounded-2xl 
                 shadow-md mt-3"
               >
-                <img src={image} alt="img" className="h-30 w-1/10" />
+                <img src={imageUrl} alt="img" className="h-30 w-1/10" />
                 <h2 className="text-md font-semibold text-neutral-800 w-4/10">
                   {title}
                 </h2>
@@ -163,9 +137,7 @@ const Cart = () => {
             <span>${totalPayableAmount}</span>
           </p>
           <NavLink to="/order">
-            <button className="py-3 px-6 m-2 bg-blue-950 text-white font-semibold rounded-2xl float-end cursor-pointer">
-              Checkout
-            </button>
+            <Button size="lg" className="float-end hover:bg-neutral-950" >Checkout</Button>
           </NavLink>
         </div>
       </div>

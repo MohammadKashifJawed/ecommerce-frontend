@@ -37,11 +37,11 @@ const Address = () => {
       console.log(err)
     })
   }
-  // useEffect(() => {
-  //   if (!isLoggedIn){
-  //     navigate('/login')
-  //   }
-  // }, [navigate, isLoggedIn])
+  useEffect(() => {
+    if (!isLoggedIn){
+      navigate('/login')
+    }
+  }, [navigate, isLoggedIn])
   const handleSetAddress = (id, name, mobile, area, landmark, pincode) => {
     setSelectedAddress({id:id, name:name, mobile:mobile, area:area, landmark:landmark, pincode:pincode})
   }

@@ -20,105 +20,132 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { TotalPriceContext } from "@/context/TotalPriceContext";
-import { useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import UpiPayment from "../crud/UpiPayment";
+import { GoCheckCircleFill } from "react-icons/go";
+import { CartProductContext } from "@/App";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { LoginContext } from "@/context/LoginContext";
 
 const Order = () => {
+    const navigate = useNavigate()
+    const { isLoggedIn } = useContext(LoginContext)
+  const { cartProducts } = useContext(CartProductContext);
   const { finalTotal, discount, platformFee, totalPayableAmount } =
     useContext(TotalPriceContext);
   const [upi, setUpi] = useState(false);
   const [card, setCard] = useState(false);
   const [cod, setCod] = useState(false);
   const [showOrderBtn, setShowOrderBtn] = useState(false);
+  const [orderSuccessfull, setOrderSuccessfull] = useState(false);
   const handleOrderBtn = (e) => {
     if (e.target.checked) {
-      setShowOrderBtn(true)
-    }else(
-        setShowOrderBtn(false)
-    )
+      setShowOrderBtn(true);
+    } else setShowOrderBtn(false);
   };
+  const handleOrder = () => {
+    if (cartProducts.length > 0) {
+      axios
+        .post("http://localhost:3000/orders", {
+          cartProducts,
+          totalPayableAmount,
+        })
+        .then(({ data }) => {
+          console.log(data);
+          setOrderSuccessfull((prev) => !prev);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+  useEffect(() => {
+      if (!isLoggedIn){
+        navigate('/login')
+      }
+    }, [navigate, isLoggedIn])
   return (
-    // <div className="h-screen w-full flex flex-col justify-center items-center">
-    //   <div>
-    //     <div onClick={() => setUpi(!upi)}>UPI</div>
-    //     {upi && <div>lorem</div>}
-    //     <div onClick={() => setCard(!card)}>Credit/Debit card</div>
-    //     {card && <CardPayment />}
-    //     <div onClick={() => setCod(!cod)}>COD</div>
-    //     {cod && <div>COD</div>}
-    //   </div>
-    //   <div>
-
-    //   </div>
-    // </div>
-    <div className="min-h-[90vh] w-full flex">
-      <div className="min-h-full w-2/3 flex flex-col items-center gap-5 shadow-lg">
+    <>
+      {orderSuccessfull && (
         <div
-          onClick={() => setUpi(!upi)}
-          className="h-20 w-8/10 border border-black flex justify-center items-center text-2xl 
-                font-bold text-neutral-700"
+          className="h-screen w-full flex justify-center items-center z-50 fixed top-0
+          nset-0 bg-black/40"
+          onClick={() => setOrderSuccessfull(!orderSuccessfull)}
         >
-          UPI {upi ? <IoIosArrowUp /> : <IoIosArrowDown />}
-        </div>
-        {upi && <UpiPayment />}
-        <div
-          onClick={() => setCard(!card)}
-          className="h-20 w-8/10 border border-black flex justify-center items-center text-2xl 
-                font-bold text-neutral-700"
-        >
-          Card {card ? <IoIosArrowUp /> : <IoIosArrowDown />}
-        </div>
-        {card && <CardPayment />}
-        <div
-          onClick={() => setCod(!cod)}
-          className="h-20 w-8/10 border border-black flex justify-center items-center text-2xl 
-                font-bold text-neutral-700"
-        >
-          COD {cod ? <IoIosArrowUp /> : <IoIosArrowDown />}
-        </div>
-        {cod && (
-          <div className="h-10 w-8/10 flex justify-between items-center border-2 text-xl px-2">
-            <label htmlFor="cod">Cash on delivery</label>
-            <input
-              onChange={(e) => handleOrderBtn(e)}
-              type="checkbox"
-              name="cod"
-              id="cod"
-            />
+          <div
+            className="h-25 w-60 bg-white rounded-xl flex flex-col justify-center items-center
+          gap-2"
+          >
+            <GoCheckCircleFill className="h-10 w-10 text-green-900" />
+            <p className="text-lg font-semibold">Order Successfull!</p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+      <div className="min-h-[90vh] w-full flex">
+        <div className="min-h-full w-2/3 flex flex-col items-center gap-5 shadow-lg">
+          <div
+            onClick={() => setUpi(!upi)}
+            className="h-20 w-8/10 border border-black flex justify-center items-center text-2xl 
+                font-bold text-neutral-700"
+          >
+            UPI {upi ? <IoIosArrowUp /> : <IoIosArrowDown />}
+          </div>
+          {upi && <UpiPayment handleOrder={handleOrder} />}
+          <div
+            onClick={() => setCard(!card)}
+            className="h-20 w-8/10 border border-black flex justify-center items-center text-2xl 
+                font-bold text-neutral-700"
+          >
+            Card {card ? <IoIosArrowUp /> : <IoIosArrowDown />}
+          </div>
+          {card && <CardPayment handleOrder={handleOrder} />}
+          <div
+            onClick={() => setCod(!cod)}
+            className="h-20 w-8/10 border border-black flex justify-center items-center text-2xl 
+                font-bold text-neutral-700"
+          >
+            COD {cod ? <IoIosArrowUp /> : <IoIosArrowDown />}
+          </div>
+          {cod && (
+            <div className="h-10 w-8/10 flex justify-between items-center border-2 text-xl px-2">
+              <label htmlFor="cod">Cash on delivery</label>
+              <input
+                onChange={(e) => handleOrderBtn(e)}
+                type="checkbox"
+                name="cod"
+                id="cod"
+              />
+            </div>
+          )}
+        </div>
 
-      <div className="h-[90vh] w-1/3 text-neutral-800 font-semibold">
-        <p className="flex justify-between items-center p-2">
-          <span>Total MRP</span> <span>${finalTotal}</span>
-        </p>
-        <p className="flex justify-between items-center p-2">
-          <span>Discount</span> <span>${discount}</span>
-        </p>
-        <p className="flex justify-between items-center p-2">
-          <span>Platform fee</span> <span>${platformFee}</span>
-        </p>{" "}
-        <hr />
-        <p className="flex justify-between items-center p-2">
-          <span className="font-bold">Total amount</span>{" "}
-          <span>${totalPayableAmount}</span>
-        </p>
-        {showOrderBtn && (
-          <button className="py-3 px-6 m-2 bg-blue-950 text-white font-semibold float-end cursor-pointer">
-            Place Order
-          </button>
-        )}
+        <div className="h-[90vh] w-1/3 text-neutral-800 font-semibold">
+          <p className="flex justify-between items-center p-2">
+            <span>Total MRP</span> <span>${finalTotal}</span>
+          </p>
+          <p className="flex justify-between items-center p-2">
+            <span>Discount</span> <span>${discount}</span>
+          </p>
+          <p className="flex justify-between items-center p-2">
+            <span>Platform fee</span> <span>${platformFee}</span>
+          </p>{" "}
+          <hr />
+          <p className="flex justify-between items-center p-2">
+            <span className="font-bold">Total amount</span>{" "}
+            <span>${totalPayableAmount}</span>
+          </p>
+          {showOrderBtn && (
+            <Button size="lg" className="float-end hover:bg-neutral-950" >Place Order</Button> 
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default Order;
 
-export function CardPayment() {
+export function CardPayment({ handleOrder }) {
   return (
     <div className="w-8/10 shadow-lg shadow-neutral-400 rounded-md p-2">
       <form>
@@ -242,7 +269,9 @@ export function CardPayment() {
             </FieldGroup>
           </FieldSet>
           <Field orientation="horizontal">
-            <Button type="submit">Pay</Button>
+            <Button type="submit" onClick={handleOrder}>
+              Pay
+            </Button>
             <Button variant="outline" type="button">
               Cancel
             </Button>
@@ -252,4 +281,3 @@ export function CardPayment() {
     </div>
   );
 }
-

@@ -4,19 +4,21 @@ import { LoginContext } from "./LoginContext";
 import { useNavigate } from "react-router-dom";
 
 const LoginProvider = ({ children }) => {
-  const navigate = useNavigate()
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("access_token"),
+  );
   const login = (credentials) => {
     axios
       .post("https://api.escuelajs.co/api/v1/auth/login", credentials)
       .then(({ data }) => {
         localStorage.setItem("access_token", data.access_token);
         setIsLoggedIn(true);
-        navigate('/')
+        navigate("/");
       })
       .catch((err) => {
-        alert('wrong credentials')
-        console.log(err)
+        alert("wrong credentials");
+        console.log(err);
       });
   };
   return (
